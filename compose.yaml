@@ -1,0 +1,114 @@
+x-meshmvc:
+  #Title of your application
+  site_name: MeshMVC
+
+  #output errors and prevent redirecting and displaying an error page
+  debug: true
+
+  default_logger: logger
+  logs:
+    access_logs: "logs/access.log"
+    error_logs: "logs/errors.log"
+
+  #REQUIRED: directories search patterns
+  seeds:
+    #views search pattern
+    - storage:*.*
+    #views search pattern
+    - view:*.php
+    #views search pattern
+    - template:*.*
+    #controllers search pattern
+    - controller:*.php
+    #css auto-discovery search pattern
+    - css:*.css
+    #js auto-discovery search pattern
+    - js:*.js
+    #media files search pattern
+    - media:*.*
+
+  default_storage: fs
+  storage:
+    #alias
+    firebase:
+        #storage type
+        firebase:
+          file:
+          apiKey:
+          authDomain:
+          projectId:
+          storageBucket:
+          messagingSenderId:
+          appId:
+          measurementId:
+    #alias
+    google:
+      #storage type
+      google:
+        API_KEY:
+    #alias
+    twittter:
+      #storage type
+      twitter:
+        client_id:
+        secret:
+    #alias
+    sftp:
+      #storage type
+      sftp:
+        HOST:
+        PORT:
+        USER:
+        PASSWORD:
+    #alias
+    curl:
+      #storage type
+      curl: ~
+    #alias
+    fs:
+      #storage type
+      local: ~
+    #alias
+    mysql:
+      #storage type
+      mysql: &mysql
+        MYSQL_HOST:
+        MYSQL_USER:
+        MYSQL_PASSWORD:
+        MYSQL_DATABASE:
+    secrets:
+      #storage type
+      mysql:
+        MYSQL_HOST:
+        MYSQL_USER:
+        MYSQL_PASSWORD:
+        MYSQL_DATABASE:
+    #alias
+    s3:
+      #storage type
+      s3:
+        AWS_REGION: "us-east-2"
+        AWS_KEY:
+        AWS_SECRET:
+    #alias
+    zip:
+      #storage type
+      zip: ~
+x-defaults:
+  network: &network
+    networks:
+      - net
+services:
+  meshmvc-api:
+    build: ./docker/api
+    ports:
+      - 80:80
+    volumes:
+      - ./www/:/var/www/html
+      - ./:/var/www/
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    <<: *network
+
+networks:
+  net:

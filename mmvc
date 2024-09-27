@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -e
+
+function usage {
+    echo "./mmvc [OPTIONS]...
+  -h  this help message
+  -u  alias of 'docker compose up -d'
+  -d  alias of 'docker compose down'
+  -e  set current yaml environment file
+  -c  clear caches and logs
+  -l  lint webapp code"
+}
+
+while getopts ":hudecl" opt; do
+  case ${opt} in
+    h )
+      usage
+      ;;
+    u )
+      echo "Starting up..."
+      docker compose up -d
+      ;;
+    d )
+      echo "Shutting down..."
+      docker compose down
+      # Shut down command here
+      ;;
+    e )
+      echo "Setting environment..."
+      # Set environment command here
+      docker-compose --env-file $2
+      ;;
+    c )
+      echo "Clearing caches..."
+      # Clear cache
+      shopt -s dotglob
+      rm -rf cache/*
+      echo "Clearing logs..."
+      rm -rf logs/*
+      echo "Caches and logs cleared."
+      ;;
+    l )
+      echo "Linting..."
+      # Lint command here
+      ;;
+    \? )
+      echo "Invalid Option: -$OPTARG" 1>&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
