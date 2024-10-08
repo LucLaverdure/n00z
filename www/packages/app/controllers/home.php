@@ -46,19 +46,35 @@ class _full_tech extends \MeshMVC\Controller {
         return route("/n00z/tech");
     }
 
+    static function date_parse($date): string {
+        $trimmedDate = preg_replace("/^on\s|\s@\d{2}:\d{2}[AP]M$/i", "", $date);
+        $date = DateTime::createFromFormat('l F d, Y', $trimmedDate);
+        if ($date) {
+            return $date->format('Y-m-d');
+        } else {
+            return "???";
+        }
+    }
+
     function run() {
         $nz = view("html")
             ->from("https://slashdot.org")
-            ->filter("h2.story span")
             ->toString();
 
         $doc = \phpQuery::newDocumentHTML($nz);
 
-        $doc->find("span")->remove();
-        $doc->find("a[title='']")->remove();
-        $doc->find("a")->removeAttr("onclick");
+        $allData = [];
 
-        echo '<div>'.$doc.'</div>';
+        foreach ($doc->find("h2.story") as $el) {
+            $this_data = pq($el);
+            $allData[] = [
+                "title" => trim($this_data->find("a:eq(0)")->text()),
+                "link" => trim($this_data->find("a:eq(0)")->attr("href")),
+                "release_date" => self::date_parse($this_data->parents("article")->find("time")->text())
+            ];
+        }
+
+        echo json_encode($allData, JSON_PRETTY_PRINT);
         die();
     }
 
@@ -70,23 +86,56 @@ class _full_music extends \MeshMVC\Controller {
         return route("/n00z/music");
     }
 
+    static function parse_date($str) {
+        // October 4, 2024
+        $date = DateTime::createFromFormat('F j, Y', $str);
+        return $date->format('Y-m-d');
+    }
+
+    static function fetchAlbums(): bool|string {
+        $url = "https://www.metacritic.com/browse/albums/release-date/new-releases/date?view=condensed";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'User-Agent: n00z/1.0 (contact@luclaverdure.com)'
+        ]);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return $response;
+    }
+
+    static function fetchLatestAlbums(): array {
+        $allAlbums = [];
+
+        $data = self::fetchAlbums();
+
+        if (!$data) {
+            return $allAlbums; // Return empty if no data is fetched
+        }
+
+        $doc = \phpQuery::newDocumentHTML($data);
+
+        foreach ($doc->find(".clamp-list tr") as $el) {
+            $album = pq($el);
+            $allAlbums[] = [
+                "title" => trim($album->find("h3")->text()),
+                "artist" => trim($album->find(".artist")->text()),
+                "release_date" => self::parse_date(trim($album->find(".details span")->text()))
+            ];
+        }
+
+        return $allAlbums;
+    }
+
     function run() {
-        $nz = view("html")
-            ->from("https://pitchfork.com/reviews/albums/")
-            ->filter("div.summary-item__content")
-            ->toString();
-
-        $doc = \phpQuery::newDocumentHTML($nz);
-
-        $doc->find("a span")->remove();
-        $doc->find(".summary-item__byline-date-icon")->remove();
-
-        echo $doc;
+        $latestAlbums = self::fetchLatestAlbums();
+        echo json_encode($latestAlbums, JSON_PRETTY_PRINT);
         die();
     }
 
 }
-
 
 
 class _full_movies extends \MeshMVC\Controller {
@@ -95,17 +144,30 @@ class _full_movies extends \MeshMVC\Controller {
         return route("/n00z/movies");
     }
 
+    static function fetchMovies($url) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($response, true);
+    }
+
     function run() {
-        $nz = view("html")
-            ->from("https://www.imdb.com/calendar")
-            ->filter("article ul .ipc-metadata-list-summary-item__tc")
-            ->toString();
+        $apiKey = '9a684caf9b21f686ab16477873af9692';
 
-        $doc = \phpQuery::newDocumentHTML($nz);
+        // Upcoming movies
+        $upcomingUrl = "https://api.themoviedb.org/3/movie/upcoming?api_key=$apiKey&language=en-US&page=1";
+        $upcomingMovies = self::fetchMovies($upcomingUrl);
 
-        $doc->find("ul")->remove();
+        // Movies in theaters
+        $inTheatersUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=$apiKey&language=en-US&page=1";
+        $inTheatersMovies = self::fetchMovies($inTheatersUrl);
 
-        echo $doc;
+        $allMovies = array_merge($upcomingMovies["results"], $inTheatersMovies["results"]);
+
+        echo json_encode($allMovies, JSON_PRETTY_PRINT);
+
         die();
     }
 
@@ -118,17 +180,73 @@ class _full_games extends \MeshMVC\Controller {
         return route("/n00z/games");
     }
 
+    static function parse_date($date) {
+        $date = new DateTime($date);
+        $formattedDate = $date->format('Y-m-d');
+        return $formattedDate;
+    }
+
+
     function run() {
-        $nz = view("html")
-            ->from("https://store.steampowered.com/explore/new/")
-            ->filter(".tab_content_items")
+        $allData = [];
+
+        $data = view("html")
+            ->from("https://internal-prod.apigee.fandom.net/v1/xapi/finder/metacritic/web?sortBy=-releaseDate&productType=games&page=1&releaseYearMin=".date("Y")."&releaseYearMax=".(date("Y")+1)."&lastTouchedInput=releaseYearMax&offset=0&limit=50&apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u")
             ->toString();
 
-        $doc = \phpQuery::newDocumentHTML($nz);
+        $data2 = view("html")
+            ->from("https://www.metacritic.com/browse/game/all/all/all-time/new/?releaseYearMin=".date("Y")."&releaseYearMax=".date("Y")."&releaseType=coming-soon&page=1")
+            ->toString();
 
-        $doc->find("div.tab_item_cap,div.tab_item_discount,div.tab_item_details")->remove();
+        $doc = \phpQuery::newDocumentHTML($data2);
 
-        echo $doc;
+        $allData = json_decode($data, true)["data"]["items"];
+
+        foreach ($doc->find(".c-finderProductCard") as $el) {
+            $this_data = pq($el);
+            $allData[] = [
+                "title" => trim($this_data->find("h3 span:eq(0)")->text()),
+                "link" => "#",
+                "releaseDate" => self::parse_date(trim($this_data->find(".c-finderProductCard_meta span:eq(0)")->text()))
+            ];
+        }
+
+
+        echo json_encode($allData, JSON_PRETTY_PRINT);
+
+        die();
+    }
+
+}
+
+class _news extends \MeshMVC\Controller {
+
+    function sign() {
+        return route("/n00z/news");
+    }
+
+    static function parse_date($str) {
+        $date = new DateTime($str);
+        $formattedDate = $date->format('Y-m-d');
+        return $formattedDate;
+    }
+
+    function run() {
+        $html = view("html")
+            ->from("https://news.google.com/rss?hl=en-CA&gl=US&ceid=CA:en")
+            ->toString();
+
+        $doc = \phpQuery::newDocumentHTML($html);
+        $allData = [];
+        foreach ($doc->find("item") as $el) {
+            $this_data = pq($el);
+            $allData[] = [
+                "title" => trim($this_data->find("title")->text()),
+                "link" => trim($this_data->find("link")->text()),
+                "pubDate" => self::parse_date(trim($this_data->find("pubDate")->text()))
+            ];
+        }
+        echo json_encode($allData, JSON_PRETTY_PRINT);
         die();
     }
 

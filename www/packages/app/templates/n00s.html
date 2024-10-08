@@ -18,8 +18,14 @@
 
     <div class="head">
         <span>n</span>
-        <img src="/n00s-blue.svg" alt="0" />
-        <img src="/n00s.svg" alt="0" />
+        <svg class="spinner" viewBox="0 0 50 50">
+            <circle class="circle" cx="25" cy="25" r="20"></circle>
+        </svg>
+        <svg class="spinner" viewBox="0 0 50 50">
+            <circle class="circle" cx="25" cy="25" r="20"></circle>
+        </svg>
+        <img src="/n00s-blue.svg" alt="0" style="display: none;" />
+        <img src="/n00s.svg" alt="0" style="display: none;" />
         <span>z</span>
     </div>
 
@@ -31,62 +37,35 @@
 
     <div class="section">
         <h2>Search</h2>
-        <input type="text" placeholder="Type to search...">
+        <div class="search-wrap">
+            <input type="text" placeholder="Type to search...">
+            <div class="search-results"></div>
+        </div>
         <input type="button" value="Search n00z"  />
         <input type="button" value="Search Google"  />
     </div>
 
-    <div class="section" style="display:none;">
-        <h2><svg class="spinner" viewBox="0 0 50 50">
-            <circle class="circle" cx="25" cy="25" r="20"></circle>
-        </svg> Algotron (AI)</h2>
-        <div id="algotron">
-            Greetings n00 man!
-        </div>
-    </div>
 </div>
     <div class="grid">
 
-        <div class="section">
-            <h2><svg class="spinner" viewBox="0 0 50 50">
-                <circle class="circle" cx="25" cy="25" r="20"></circle>
-            </svg> Tech n00z</h2>
-            <div id="tech">
+
+        <div class="section" style="display:none;">
+            <h2>Past n00z</h2>
+            <div id="past">
             </div>
         </div>
 
-        <div class="section">
-            <h2> <svg class="spinner" viewBox="0 0 50 50">
-                <circle class="circle" cx="25" cy="25" r="20"></circle>
-            </svg> Music n00z</h2>
-            <div id="music">
+        <div class="section" style="display:none;">
+            <h2>Today's n00z</h2>
+            <div id="today">
             </div>
         </div>
 
-        <div class="section">
-            <h2> <svg class="spinner" viewBox="0 0 50 50">
-                <circle class="circle" cx="25" cy="25" r="20"></circle>
-            </svg> Movies n00z</h2>
-            <div id="movies">
+        <div class="section" style="display:none;">
+            <h2>Upcoming n00z</h2>
+            <div id="coming">
             </div>
         </div>
-
-        <div class="section">
-            <h2><svg class="spinner" viewBox="0 0 50 50">
-                <circle class="circle" cx="25" cy="25" r="20"></circle>
-            </svg> Games n00z</h2>
-            <div id="games">
-            </div>
-        </div>
-
-        <!--
-        <div class="section">
-            <h2><svg class="spinner" viewBox="0 0 50 50">
-                <circle class="circle" cx="25" cy="25" r="20"></circle>
-            </svg> Favorites</h2>
-            <div id="favorites"></div>
-        </div>
-        -->
 
     </div>
 

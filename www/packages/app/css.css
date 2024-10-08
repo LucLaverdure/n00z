@@ -15,7 +15,7 @@ body {
     margin-bottom: 30px;
 }
 
-.head img, .head span {
+.head img, .head span, .head svg {
     display: inline-block;
     width: 100px;
     height: 100px;
@@ -45,7 +45,21 @@ h1 {
     color: #01579b;
     margin-bottom: 40px;
 }
-
+h3 {
+    color: #333;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+h4 {
+    color: #555;
+    padding: 5px 10px;
+    border-left: 4px solid #007BFF;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
 .clock {
     text-align: center;
     margin-bottom: 20px;
@@ -123,7 +137,7 @@ ul {
 @media (min-width: 768px) {
     .grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
     }
 }
@@ -174,4 +188,44 @@ ul {
 
 #music span:last-child, #movies span:last-child{
     color: darkblue;
+}
+
+.search-wrap {
+    position: relative;
+}
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Initially hidden */
+    z-index: 1000;
+}
+.search-results div {
+    padding: 10px;
+    cursor: pointer;
+}
+.search-results div:hover {
+    background-color: #f0f0f0;
+}
+
+.search-results a {
+    padding: 5px 10px;
+}
+
+.search-results a:hover {
+    background-color: #f0f0f0;
+    color: #333;
 }
