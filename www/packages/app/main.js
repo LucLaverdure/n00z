@@ -32,11 +32,15 @@ $(document).ready(function() {
         const uniqueItems = [];
         const seen = new Set();
 
+        const now = new Date();
+        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
         $items.forEach(item => {
             const $item = $(item);
+            const itemDate = new Date($item.data('date'));
             const identifier = $item.data('date') + '-' + $item.data('cat') + '-' + $item.find('span').text();
 
-            if (!seen.has(identifier)) {
+            if (itemDate >= lastMonth && !seen.has(identifier)) {
                 seen.add(identifier);
                 uniqueItems.push($item);
             }
@@ -102,7 +106,7 @@ $(document).ready(function() {
         }
     }
 
-    function add_data(data_category, data_output, date_input, link) {
+    function add_data(data_category, data_output, date_input, link, rating) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -114,25 +118,49 @@ $(document).ready(function() {
             link = "#";
         }
 
-        const output = '<a target="_blank" href="'+ link +'" data-date="'+date_input+'" data-cat="'+data_category+'"> <span>' + data_output + '</span></a>';
-
-        switch (true) {
-            case date.getTime() === today.getTime():
-                $('#today').append(output);
-                break;
-            case date < today:
-                $('#past').append(output);
-                break;
-            case date > today:
-                $('#coming').append(output);
-                break;
-            default:
-                console.log("date_error")
+        if (rating === undefined) {
+            rating = "";
         }
 
+        const output = '<a target="_blank" href="'+ link +'" data-rating="'+rating+'" data-date="'+date_input+'" data-cat="'+data_category+'"> <span>' + data_output + '</span></a>';
+
+        if (date_input === "Trend") {
+            $('#trends').append(output);
+        } else {
+            switch (true) {
+                case date.getTime() === today.getTime():
+                    $('#today').append(output);
+                    break;
+                case date < today:
+                    $('#past').append(output);
+                    break;
+                case date > today:
+                    $('#coming').append(output);
+                    break;
+                default:
+                    console.log("date_error")
+            }
+        }
     }
 
     function load_all(key) {
+
+        /*
+        $.ajax({
+            cache: false,
+            url: '/n00z/trend/games',
+            data: {key: key},
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                response.forEach(function(item) {
+                    add_data("Games", item.title, "Trend", "https://isthereanydeal.com/search/?q=" + encodeURIComponent(item.title), item.rating);
+                });
+                tick_data();
+            }
+        });
+        */
 
         $.ajax({
             cache: false,
@@ -203,7 +231,7 @@ $(document).ready(function() {
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (response) {
                 response.forEach(function(item) {
-                    add_data("News", item.title, item.pubDate, item.link);
+                    add_data("News", item.title, item.pubDate, item.link, 0);
                 });
                 tick_data();
             }
@@ -252,6 +280,11 @@ $(document).ready(function() {
         const key = $(this).text();
         $('.search-wrap input').val(key);
         $(".search-results").hide();
+    });
+
+    $(document).on('click', '.settings a',  function() {
+        $(".settings-section").slideToggle();
+        return false;
     });
 
 });

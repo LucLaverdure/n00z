@@ -6,7 +6,12 @@ body {
     background-color: #f0f8ff;
     color: #333;
 }
-
+select {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    display: inline-block;
+    min-width: 150px;
+}
 .head {
     color: #01579b;
     padding: 10px;
@@ -26,7 +31,7 @@ body {
 }
 
 @media (max-width: 500px) {
-    .head img, .head span {
+    .head img, .head span, .head svg {
         width: 55px;
         height: 55px;
         line-height: 55px;
@@ -38,6 +43,7 @@ body {
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
+    position: relative;
 }
 
 h1 {
@@ -102,6 +108,7 @@ input[type="text"] {
 }
 
 input[type="button"] {
+    min-width: 130px;
     width: 15%;
     padding: 12px;
     margin-top: 10px;
@@ -132,6 +139,11 @@ ul {
 .grid {
     max-width:80%;
     margin: 0 auto;
+}
+
+.search-buttons {
+    display: flex;
+    justify-content: center;
 }
 
 @media (min-width: 768px) {
@@ -228,4 +240,96 @@ input[type="text"] {
 .search-results a:hover {
     background-color: #f0f0f0;
     color: #333;
+}
+
+#footer {
+    margin: 0 auto;
+    max-width:80%;
+    width:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#footer hr {
+}
+#footer .col {
+    display: inline-block;
+    padding: 10px;
+    width:300px;
+    max-width: 100%;
+}
+#footer .founder {
+    text-align: center;
+}
+.founder img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 1px solid #000;
+}
+.social {
+    display: flex;
+    justify-content: center;
+}
+.social img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+.founder ul {
+    list-style: none;
+}
+.founder ul li {
+    display: inline-block;
+    width:35px;
+    height: 35px;
+    background: #fff;
+    border-radius: 50%;
+    text-align:center;
+    line-height: 50px;
+    border: 1px solid #000;
+}
+.settings {
+    position: relative;
+}
+#qr {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#qr:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.settings img {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+.goto.settings img {
+    transition: transform 0.5s ease;
+}
+
+.goto.settings img:hover {
+    transform: rotate(360deg);
+}
+
+.settings.actions {
+    text-align: center;
+}
+.cup {
+    transition: transform 0.4s ease;
+}
+.cup:hover {
+    transform: scale(1.05) rotate(10deg);
 }
