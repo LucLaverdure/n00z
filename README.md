@@ -10,3 +10,4 @@ TODO:
 - add "..." and share options button
 - add caching
 - add weather
+- add visited links color
