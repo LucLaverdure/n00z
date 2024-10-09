@@ -114,7 +114,7 @@ $(document).ready(function() {
             link = "#";
         }
 
-        const output = '<a href="'+ link +'" data-date="'+date_input+'" data-cat="'+data_category+'"> <span>' + data_output + '</span></a>';
+        const output = '<a target="_blank" href="'+ link +'" data-date="'+date_input+'" data-cat="'+data_category+'"> <span>' + data_output + '</span></a>';
 
         switch (true) {
             case date.getTime() === today.getTime():
@@ -143,7 +143,7 @@ $(document).ready(function() {
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (response) {
                 response.forEach(function(item) {
-                    add_data("Tech", item.title, item.release_date);
+                    add_data("Tech", item.title, item.release_date, item.link);
                 });
                 tick_data();
             }
@@ -158,7 +158,7 @@ $(document).ready(function() {
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (response) {
                 response.forEach(function(item) {
-                    add_data("Music", item.title.replace("User Score", "") + " " + item.artist, item.release_date);
+                    add_data("Music", item.title.replace("User Score", "") + " " + item.artist, item.release_date, "https://open.spotify.com/search/" + encodeURIComponent(item.title.replace("User Score", "") + " " + item.artist).replace("%0A%20by", "") + "/albums");
                 });
                 tick_data();
             }
@@ -173,7 +173,7 @@ $(document).ready(function() {
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (response) {
                 response.forEach(function(item) {
-                    add_data("Movie", item.title, item.release_date);
+                    add_data("Movie", item.title, item.release_date, "https://www.imdb.com/find?q=" + encodeURIComponent(item.title + " " + item.release_date.substring(0, 4)));
                 });
                 tick_data();
             }
@@ -188,7 +188,7 @@ $(document).ready(function() {
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (response) {
                 response.forEach(function(item) {
-                    add_data("Games", item.title, item.releaseDate);
+                    add_data("Games", item.title, item.releaseDate, "https://isthereanydeal.com/search/?q=" + encodeURIComponent(item.title));
                 });
                 tick_data();
             }
@@ -203,7 +203,7 @@ $(document).ready(function() {
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (response) {
                 response.forEach(function(item) {
-                    add_data("News", item.title, item.pubDate);
+                    add_data("News", item.title, item.pubDate, item.link);
                 });
                 tick_data();
             }

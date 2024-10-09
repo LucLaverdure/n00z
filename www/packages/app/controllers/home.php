@@ -69,7 +69,7 @@ class _full_tech extends \MeshMVC\Controller {
             $this_data = pq($el);
             $allData[] = [
                 "title" => trim($this_data->find("a:eq(0)")->text()),
-                "link" => trim($this_data->find("a:eq(0)")->attr("href")),
+                "link" => trim($this_data->find("a.story-sourcelnk:eq(0)")->attr("href")),
                 "release_date" => self::date_parse($this_data->parents("article")->find("time")->text())
             ];
         }
