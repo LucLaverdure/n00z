@@ -9,3 +9,4 @@ TODO:
 - add highlights based on good reviews
 - add "..." and share options button
 - add caching
+- add weather
