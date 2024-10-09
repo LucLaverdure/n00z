@@ -11,3 +11,4 @@ TODO:
 - add caching
 - add weather
 - add visited links color
+- add favorite star toggle for each link and a favorite list box
