@@ -8,3 +8,4 @@ TODO:
 - add reviews
 - add highlights based on good reviews
 - add "..." and share options button
+- add caching
