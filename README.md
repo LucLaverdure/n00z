@@ -12,3 +12,5 @@ TODO:
 - add weather
 - add visited links color
 - add favorite star toggle for each link and a favorite list box
+- swipe between columns, focus on middle column
+- add images to feed and colorize boxes with css and fonts
